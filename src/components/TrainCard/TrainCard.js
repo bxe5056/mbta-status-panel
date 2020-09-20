@@ -2,12 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment'
 
+const TrainDirectory = require('../TrainDirectory/TrainDirectory');
+
+
 class TrainCard extends React.Component {
+    dayOfWeek = moment().format('dddd');
+    currentTime = moment().format('HH:mm');
+    nextTrainObject = {};
+
+
     componentDidMount() {
         this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
     }
     componentWillUnmount() {
         clearInterval(this.interval);
+    }
+
+    getNextTrain(){
+        let trainObject = TrainDirectory.getNextTrain(this.dayOfWeek, this.props.direction, this.currentTime, this.props.station);
+        console.log("OMG: " + JSON.stringify(trainObject));
+        return trainObject;
     }
 
     calculateTimeDiff = (time) => {
@@ -30,19 +44,67 @@ class TrainCard extends React.Component {
         }
     }
 
+    getDestination = (origin) => {
+        if (origin === 'Back Bay') {
+            return 'Franklin';
+        } else if (origin === 'Franklin') {
+            return 'Back Bay';
+        } else {
+            return null;
+        }
+    }
+
     render(){
-        return (
-            <div className="card-body">
-                <div className="card-title mb-1 h3"><b>{this.props.nextTrain.station}</b></div>
-                <div className="card-subtitle mb-2 text-muted">{this.calculateDirection(this.props.nextTrain.direction)}</div>
-                <div className="card-subtitle mb-2">
-                    {this.calculateTimeDiff(this.props.nextTrain.departureTime)}
+        if (this.getNextTrain()) {
+            return (
+                <div className="card-body">
+                    <div className="card-title mb-1 h3"><b>{this.props.station}</b></div>
+                    <div className="card-subtitle mb-2 text-muted">{this.calculateDirection(this.props.direction)}</div>
+                    <div className="card-subtitle mb-2">
+                        {
+                            this.calculateTimeDiff(
+                                moment()
+                                    .hour(this.getNextTrain().time[this.props.station].slice(0, 2))
+                                    .minute(this.getNextTrain().time[this.props.station].slice(3, 5))
+                            )
+                        }
+
+                    </div>
+                    <div className="card-subtitle">
+                        Departs&nbsp;
+                        {
+                            this.calculateTime(
+                                moment()
+                                    .hour(this.getNextTrain().time[this.props.station].slice(0, 2))
+                                    .minute(this.getNextTrain().time[this.props.station].slice(3, 5))
+                            )
+                        }
+                        <br/>
+                        Arrives at {
+                        this.getDestination(this.props.station)
+                    }&nbsp;
+                        {
+                            this.calculateTime(
+                                moment()
+                                    .hour(this.getNextTrain().time[this.getDestination(this.props.station)].slice(0, 2))
+                                    .minute(this.getNextTrain().time[this.getDestination(this.props.station)].slice(3, 5))
+                            )
+                        }
+                    </div>
                 </div>
-                <div className="card-subtitle">
-                    {this.calculateTime(this.props.nextTrain.departureTime)}
+            )
+        }
+        else {
+            return (
+            <div className="card-body">
+                <div className="card-title mb-1 h3"><b>{this.props.station}</b></div>
+                <div className="card-subtitle mb-2 text-muted">{this.calculateDirection(this.props.direction)}</div>
+                <div className="card-subtitle mb-2">
+                    No more trains today :(
                 </div>
             </div>
-        )
+            )
+        }
     }
 }
 
