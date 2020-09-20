@@ -6,16 +6,6 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col';
 
 function App() {
-    const tempTrain = {
-        station: 'Franklin',
-        direction: 'inbound',
-        departureTime: '2020-09-08T05:45'
-    }
-    const tempBBTrain = {
-        station: 'Back Bay',
-        direction: '0',
-        departureTime: '2020-09-07T22:45'
-    }
     return (
         <div className="App">
             <Container fluid>
@@ -27,8 +17,8 @@ function App() {
                 </Row>
 
                 <Row className="justify-content-md-center">
-                    <Col xs lg="4"><TrainCard nextTrain={tempTrain}/></Col>
-                    <Col xs lg="4"><TrainCard nextTrain={tempBBTrain}/></Col>
+                    <Col xs lg="4"><TrainCard station='Franklin' direction='inbound'/></Col>
+                    <Col xs lg="4"><TrainCard station='Back Bay' direction='outbound'/></Col>
                 </Row>
             </Container>
         </div>
