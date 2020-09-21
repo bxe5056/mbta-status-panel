@@ -6,21 +6,28 @@ const TrainDirectory = require('../TrainDirectory/TrainDirectory');
 
 
 class TrainCard extends React.Component {
+
     dayOfWeek = moment().format('dddd');
     currentTime = moment().format('HH:mm');
     nextTrainObject = {};
 
+    constructor(props){
+        super(props);
+        this.state = { currentTime: moment(Date.now()).format('HH:mm') }
+    }
 
     componentDidMount() {
-        this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000);
+        this.interval = setInterval(() => this.setState({
+            time: Date.now(),
+            currentTime: moment(Date.now()).format('HH:mm')
+        }), 1000);
     }
     componentWillUnmount() {
         clearInterval(this.interval);
     }
 
     getNextTrain(){
-        let trainObject = TrainDirectory.getNextTrain(this.dayOfWeek, this.props.direction, this.currentTime, this.props.station);
-        console.log("OMG: " + JSON.stringify(trainObject));
+        let trainObject = TrainDirectory.getNextTrain(this.dayOfWeek, this.props.direction, this.state.currentTime, this.props.station);
         return trainObject;
     }
 
@@ -57,9 +64,12 @@ class TrainCard extends React.Component {
     render(){
         if (this.getNextTrain()) {
             return (
-                <div className="card-body">
-                    <div className="card-title mb-1 h3"><b>{this.props.station}</b></div>
+                <div className="card border-primary mb-3">
+                    <div className="card-header mb-1">
+                        <div className="h3"><b>{this.props.station}</b></div>
                     <div className="card-subtitle mb-2 text-muted">{this.calculateDirection(this.props.direction)}</div>
+                    </div>
+                    <div className="card-body">
                     <div className="card-subtitle mb-2">
                         {
                             this.calculateTimeDiff(
@@ -71,7 +81,8 @@ class TrainCard extends React.Component {
 
                     </div>
                     <div className="card-subtitle">
-                        Departs&nbsp;
+                        Departs
+                        &nbsp;
                         {
                             this.calculateTime(
                                 moment()
@@ -81,8 +92,9 @@ class TrainCard extends React.Component {
                         }
                         <br/>
                         Arrives at {
-                        this.getDestination(this.props.station)
-                    }&nbsp;
+                            this.getDestination(this.props.station)
+                        }
+                        &nbsp;
                         {
                             this.calculateTime(
                                 moment()
@@ -91,6 +103,7 @@ class TrainCard extends React.Component {
                             )
                         }
                     </div>
+                </div>
                 </div>
             )
         }
@@ -107,14 +120,6 @@ class TrainCard extends React.Component {
         }
     }
 }
-
-TrainCard.defaultProps = {
-    nextTrain: {
-        station: 'null',
-        departureTime: 'null pm',
-        direction: 'circular'
-    }
-};
 
 TrainCard.propTypes = {
     nextTrain: PropTypes.object

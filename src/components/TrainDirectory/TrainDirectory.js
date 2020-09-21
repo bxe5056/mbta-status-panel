@@ -1,7 +1,6 @@
 
 //TODO implement day of week check
-// eslint-disable-next-line no-unused-vars
-let daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+// -let-daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
 
 export const trainList = {
     700   :{ direction: 'inbound', time:{ 'Franklin': '05:25', 'Back Bay': '06:17'}, bikes: 1, days: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'] },
@@ -95,7 +94,7 @@ export function getTrainsForDay(dayOfWeek, tempTrainList = trainList) {
     return matchedTrains;
 }
 
-export function getUpcomingTrains(dayOfWeek, direction, currentTime = "10:15", stop) {
+export function getUpcomingTrains(dayOfWeek, direction, currentTime, stop) {
     let upcomingTrains = {};
 
     let dailyTrains = getTrainsForDay(dayOfWeek);
@@ -122,7 +121,8 @@ export function getUpcomingTrains(dayOfWeek, direction, currentTime = "10:15", s
 }
 
 export function getNextTrain(dayOfWeek, direction, currentTime, stop, upcomingTrains = getUpcomingTrains(dayOfWeek, direction, currentTime, stop)){
-    // let upcomingTrains = getUpcomingTrains(dayOfWeek, direction, currentTime, stop);
+    // Note: This function returns a different format than the other functions.
+
     let nextTrain = null;
     Object.entries(upcomingTrains).forEach(train => {
         if (nextTrain === null){
@@ -142,10 +142,5 @@ export function getNextTrain(dayOfWeek, direction, currentTime, stop, upcomingTr
             };
         }
     })
-    console.log(JSON.stringify(nextTrain))
     return nextTrain;
-}
-
-export const getTrainList = () => {
-    return trainList;
 }
