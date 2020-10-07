@@ -9,8 +9,6 @@ class TrainCard extends React.Component {
 
     dayOfWeek = moment().format('dddd');
     currentTime = moment().format('HH:mm');
-    nextTrainObject = {};
-
     constructor(props){
         super(props);
         this.state = { currentTime: moment(Date.now()).format('HH:mm') }
